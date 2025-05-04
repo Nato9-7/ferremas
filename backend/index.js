@@ -17,7 +17,7 @@ const db = mysql.createConnection({
 
 // 📦 Endpoint para obtener productos
 app.get('/producto', (req, res) => {
-  const query = 'SELECT codigo_producto, nombre, precio, marca FROM producto';
+  const query = 'SELECT codigoProducto , nombre, precio, marca, codigo FROM producto';
 
   db.query(query, (err, results) => {
     if (err) {
