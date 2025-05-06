@@ -29,7 +29,7 @@ const Products = () => {
               className="border w-72 p-4 rounded shadow hover:shadow-lg  hover:scale-105 transition-transform duration-300"
             >
               <img
-                src={`/ImgProductos/${producto.codigoProducto}.jpg`} // <- usa la propiedad que tengas en el objeto
+                src={`/ImgProductos/${producto.codigoProducto}.jpg`}
                 alt={producto.nombre}
                 className="w-full h-42 object-contain rounded mb-4 bg-white-200 "
               />
