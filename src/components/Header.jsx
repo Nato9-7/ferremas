@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Popover,
   PopoverButton,
@@ -188,32 +189,6 @@ const Header = () => {
           <div className="flex items-center space-x-6">
             {/* Botón Iniciar sesión */}
 
-            <PopoverGroup className="hidden lg:flex lg:gap-x-12 lg:items-center">
-              <Popover className="relative">
-                <PopoverButton className="flex items-center gap-x-1  font-semibold text-white-900">
-                  <span className="text-sm">Hola, Inicia sesión</span>
-                  <ChevronDownIcon
-                    aria-hidden="true"
-                    className="size-5 flex-none text-gray-400"
-                  />
-                </PopoverButton>
-                <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5">
-                  <div className="p-2">
-                    {["Iniciar sesión", "Crear cuenta", "Mi cuenta"].map(
-                      (item) => (
-                        <a
-                          key={item}
-                          href="#"
-                          className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
-                        >
-                          {item}
-                        </a>
-                      )
-                    )}
-                  </div>
-                </PopoverPanel>
-              </Popover>
-            </PopoverGroup>
             {/* Botón Carrito */}
             <div className="flex items-center space-x-1 cursor-pointer">
               <svg

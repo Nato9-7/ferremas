@@ -6,10 +6,13 @@ import React from "react";
 
 function App() {
   return (
-    <div>
+    <BrowserRouter>
       <Header />
-      <Products />
-    </div>
+      <Routes>
+        <Route path="/" element={<Products />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
