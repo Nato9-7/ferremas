@@ -12,9 +12,17 @@ export const CarritoProvider = ({ children }) => {
   };
 
   const eliminarDelCarrito = (codigoProducto) => {
-    setCarrito((prev) =>
-      prev.filter((item) => item.codigoProducto !== codigoProducto)
-    );
+    setCarrito((prev) => {
+      const index = prev.findIndex(
+        (item) => item.codigoProducto === codigoProducto
+      );
+      if (index !== -1) {
+        const nuevoCarrito = [...prev];
+        nuevoCarrito.splice(index, 1);
+        return nuevoCarrito;
+      }
+      return prev;
+    });
   };
 
   return (
