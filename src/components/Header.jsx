@@ -8,6 +8,12 @@ import {
 } from "@headlessui/react";
 import { Bars3Icon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
+const links = [
+  { label: "Iniciar sesión", to: "/login" },
+  { label: "Crear cuenta", to: "/register" },
+  { label: "Mi cuenta", to: "/account" },
+];
+
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -93,17 +99,15 @@ const Header = () => {
               </PopoverButton>
               <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5">
                 <div className="p-2">
-                  {["Iniciar sesión", "Crear cuenta", "Mi cuenta"].map(
-                    (item) => (
-                      <a
-                        key={item}
-                        href="#"
-                        className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
-                      >
-                        {item}
-                      </a>
-                    )
-                  )}
+                  {links.map(({ label, to }) => (
+                    <Link
+                      key={label}
+                      to={to}
+                      className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+                    >
+                      {label}
+                    </Link>
+                  ))}
                 </div>
               </PopoverPanel>
             </Popover>
@@ -217,7 +221,10 @@ const Header = () => {
             {/* Botón Iniciar sesión */}
 
             {/* Botón Carrito */}
-            <div className="flex items-center space-x-1 cursor-pointer">
+            <Link
+              to="CartPage"
+              className="flex items-center space-x-1 cursor-pointer"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5 text-white-600"
@@ -233,7 +240,7 @@ const Header = () => {
                 />
               </svg>
               <span className="text-sm ">Mis compras</span>
-            </div>
+            </Link>
           </div>
         </div>
 
