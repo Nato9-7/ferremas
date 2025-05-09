@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useCarrito } from "../components/Carrito";
 
 const Products = () => {
   const [productos, setProductos] = useState([]);
+  const { agregarAlCarrito } = useCarrito();
 
   useEffect(() => {
     fetch("http://localhost:3000/producto")
@@ -42,6 +44,15 @@ const Products = () => {
               <p className="text-xs text-gray-400 mt-1">
                 Código: {producto.codigoProducto}
               </p>
+              <button
+                onClick={() => {
+                  console.log("Agregando producto", producto);
+                  agregarAlCarrito(producto);
+                }}
+                className="bg-blue-500 text-white px-4 py-2 rounded mt-4 hover:bg-blue-600 transition-colors duration-300"
+              >
+                Agregar al carrito
+              </button>
             </div>
           ))}
         </div>
