@@ -23,8 +23,8 @@ function Login() {
           <div>
             <label className="block text-sm font-medium text-gray-700">Contraseña</label>
             <input
-  type="text"
-  placeholder="Correo electrónico"
+  type="password"
+  placeholder="Contraseña"
   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
 />
           </div>
