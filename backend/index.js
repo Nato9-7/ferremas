@@ -3,9 +3,11 @@ const mysql = require('mysql2');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = 5000;
 
 app.use(cors());
+app.use(express.json()); // 👈 Esto debe ir antes de cualquier app.post
+
 
 // 🔌 Configuración de conexión a MySQL
 const db = mysql.createConnection({
@@ -25,6 +27,25 @@ app.get('/producto', (req, res) => {
       res.status(500).json({ error: 'Error al obtener los productos' });
     } else {
       res.json(results);
+    }
+  });
+});
+
+app.post('/login', (req, res) => {
+  const { correo, contraseña } = req.body;
+
+  const query = 'SELECT id FROM usuario WHERE correo = ? AND contraseña = ?';
+
+  db.query(query, [correo, contraseña], (err, results) => {
+    if (err) {
+      console.error('Error al buscar el usuario:', err);
+      return res.status(500).json({ error: 'Error al consultar la base de datos' });
+    }
+
+    if (results.length > 0) {
+      return res.json({ id: results[0].id, mensaje: 'Login exitoso' });
+    } else {
+      return res.status(401).json({ mensaje: 'Credenciales incorrectas' });
     }
   });
 });

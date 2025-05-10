@@ -6,7 +6,7 @@ const Products = () => {
   const { agregarAlCarrito } = useCarrito();
 
   useEffect(() => {
-    fetch("http://localhost:3000/producto")
+    fetch("http://localhost:5000/producto")
       .then((res) => res.json())
       .then((data) => {
         setProductos(data.slice(0, 6));
