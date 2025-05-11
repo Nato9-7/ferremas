@@ -1,15 +1,17 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
+const webpayRoutes = require("../backend/webpay.route.js");
 
 const app = express();
 const port = 5000;
 
 app.use(cors());
-app.use(express.json()); // 👈 Esto debe ir antes de cualquier app.post
+app.use(express.json());
 
+app.use("/webpay", webpayRoutes);
 
-// 🔌 Configuración de conexión a MySQL
+// Configuración de conexión a MySQL
 const db = mysql.createConnection({
   host: 'bodxhia1bgfd9lyers48-mysql.services.clever-cloud.com',
   user: 'u0rtqxk97gcsgtoq',
@@ -17,7 +19,7 @@ const db = mysql.createConnection({
   database: 'bodxhia1bgfd9lyers48'
 });
 
-// 📦 Endpoint para obtener productos
+// Endpoint para obtener productos
 app.get('/producto', (req, res) => {
   const query = 'SELECT codigoProducto , nombre, precio, marca, codigo FROM producto';
 
@@ -50,7 +52,7 @@ app.post('/login', (req, res) => {
   });
 });
 
-// 🚀 Iniciar servidor
+//  Iniciar servidor
 app.listen(port, () => {
   console.log(`API corriendo en http://localhost:${port}`);
 });
