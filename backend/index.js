@@ -1,6 +1,7 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
+const webpayRoutes = require("../backend/webpay.route.js");
 const jwt = require('jsonwebtoken'); // 👈 Importamos JWT
 
 const app = express();
@@ -10,7 +11,8 @@ const SECRET_KEY = 'tu_clave_secreta_super_segura'; // 👈 Cámbiala en producc
 app.use(cors());
 app.use(express.json());
 
-// 🔌 Conexión a MySQL
+app.use("/webpay", webpayRoutes);
+// Conexión a MySQL
 const db = mysql.createConnection({
   host: 'bodxhia1bgfd9lyers48-mysql.services.clever-cloud.com',
   user: 'u0rtqxk97gcsgtoq',
@@ -18,7 +20,7 @@ const db = mysql.createConnection({
   database: 'bodxhia1bgfd9lyers48'
 });
 
-// 📦 Endpoint productos
+// Endpoint productos
 app.get('/producto', (req, res) => {
   const query = 'SELECT codigoProducto , nombre, precio, marca, codigo FROM producto';
   db.query(query, (err, results) => {
@@ -70,7 +72,7 @@ app.post('/login', (req, res) => {
   });
 });
 
-// 🚀 Iniciar servidor
+//  Iniciar servidor
 app.listen(port, () => {
   console.log(`API corriendo en http://localhost:${port}`);
 });

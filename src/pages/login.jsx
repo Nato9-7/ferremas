@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
-
-
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
@@ -25,33 +23,30 @@ function Login() {
       });
 
       if (response.status === 401) {
-  const errorData = await response.json();
-  alert(errorData.mensaje); // Muestra el mensaje del backend
-  return;
-}
+        const errorData = await response.json();
+        alert(errorData.mensaje); // Muestra el mensaje del backend
+        return;
+      }
 
-if (!response.ok) {
-  throw new Error("Error en la consulta al backend");
-}
-
+      if (!response.ok) {
+        throw new Error("Error en la consulta al backend");
+      }
 
       const data = await response.json();
 
-console.log("Token recibido:", data.token); // 👈 AQUÍ imprimes el token
-console.log("ID del usuario:", data.id);
-console.log("Nombre del usuario:", data.nombre);
+      console.log("Token recibido:", data.token); // 👈 AQUÍ imprimes el token
+      console.log("ID del usuario:", data.id);
+      console.log("Nombre del usuario:", data.nombre);
 
+      if (data.id > 0) {
+        localStorage.removeItem("token");
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("nombre", data.nombre);
 
-if (data.id > 0) {
-  localStorage.removeItem('token');
-localStorage.setItem('token', data.token);
-  localStorage.setItem("nombre", data.nombre);
+        navigate("/");
+      }
 
-  navigate("/");
-}
-
-  navigate("/");
-
+      navigate("/");
     } catch (error) {
       console.error("Error al realizar la consulta:", error);
     }
@@ -65,10 +60,14 @@ localStorage.setItem('token', data.token);
           alt="Descripción de la imagen"
           className="w-24 h-24 mx-auto mb-4 rounded-full"
         />
-        <h2 className="text-2xl font-bold text-center mb-6 text-blue-800">Iniciar Sesión</h2>
+        <h2 className="text-2xl font-bold text-center mb-6 text-blue-800">
+          Iniciar Sesión
+        </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Correo electrónico</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Correo electrónico
+            </label>
             <input
               type="text"
               placeholder="Correo electrónico"
@@ -78,7 +77,9 @@ localStorage.setItem('token', data.token);
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Contraseña</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Contraseña
+            </label>
             <input
               type="password"
               placeholder="Contraseña"
@@ -95,7 +96,10 @@ localStorage.setItem('token', data.token);
           </button>
         </form>
         <p className="text-sm text-gray-500 mt-4 text-center">
-          ¿No tienes una cuenta? <a href="#" className="text-blue-600 hover:underline">Regístrate</a>
+          ¿No tienes una cuenta?{" "}
+          <a href="#" className="text-blue-600 hover:underline">
+            Regístrate
+          </a>
         </p>
       </div>
     </div>
