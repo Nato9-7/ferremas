@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Popover,
@@ -16,6 +16,8 @@ const links = [
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const nombre = localStorage.getItem("nombre") || ", inicia sesión";
 
   return (
     <header className="bg-blue-800 text-white shadow-lg   ">
@@ -91,7 +93,7 @@ const Header = () => {
           <PopoverGroup className="hidden lg:flex lg:gap-x-12 lg:items-center">
             <Popover className="relative">
               <PopoverButton className="flex items-center gap-x-1  font-semibold text-white-900">
-                <span className="text-sm">Hola, Inicia sesión</span>
+                <span className="text-sm">Hola {nombre}</span>
                 <ChevronDownIcon
                   aria-hidden="true"
                   className="size-5 flex-none text-gray-400"
@@ -192,7 +194,7 @@ const Header = () => {
                         </div>
                         <div>
                           <button className="flex w-full bg-gray-100 items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                            Hola, Inicia sesión
+                            <span className="text-sm">Hola {nombre}</span>
                             <ChevronDownIcon className="h-5 w-5 flex-none" />
                           </button>
                         </div>

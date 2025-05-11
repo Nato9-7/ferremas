@@ -34,14 +34,19 @@ function Login() {
 
       const data = await response.json();
 
-      // Imprimir el ID del usuario en la consola}
-      console.log("Respuesta completa del backend:", data);
-
+      console.log("Token recibido:", data.token); // 👈 AQUÍ imprimes el token
       console.log("ID del usuario:", data.id);
+      console.log("Nombre del usuario:", data.nombre);
+
       if (data.id > 0) {
-        console.log("ID del usuario:", data.id);
-        navigate("/"); // 👈 Reemplaza '/main' con la ruta que corresponda en tu app
+        localStorage.removeItem("token");
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("nombre", data.nombre);
+
+        navigate("/");
       }
+
+      navigate("/");
     } catch (error) {
       console.error("Error al realizar la consulta:", error);
     }
