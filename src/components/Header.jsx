@@ -23,13 +23,13 @@ const Header = () => {
     <header className="bg-blue-800 text-white shadow-lg   ">
       <div className="container mx-auto px-2 py-2">
         <div className="flex justify-between items-center">
-          <a href="#" className="flex items-center space-x-2">
+          <Link to={"/"} className="flex items-center space-x-2">
             {/*  logo */}
             <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center">
               <span className="text-blue-600 font-bold">FM</span>
             </div>
             <h1 className="text-xl font-bold">Ferremas</h1>
-          </a>
+          </Link>
 
           {/* Botón de Categorías (versión desktop) */}
           <PopoverGroup className="hidden lg:flex lg:gap-x-12 lg:items-center">
