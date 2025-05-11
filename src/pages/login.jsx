@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
-
-
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
@@ -25,15 +23,14 @@ function Login() {
       });
 
       if (response.status === 401) {
-  const errorData = await response.json();
-  alert(errorData.mensaje); // Muestra el mensaje del backend
-  return;
-}
+        const errorData = await response.json();
+        alert(errorData.mensaje); // Muestra el mensaje del backend
+        return;
+      }
 
-if (!response.ok) {
-  throw new Error("Error en la consulta al backend");
-}
-
+      if (!response.ok) {
+        throw new Error("Error en la consulta al backend");
+      }
 
       const data = await response.json();
 
@@ -42,9 +39,9 @@ if (!response.ok) {
 
       console.log("ID del usuario:", data.id);
       if (data.id > 0) {
-  console.log("ID del usuario:", data.id);
-  navigate("/"); // 👈 Reemplaza '/main' con la ruta que corresponda en tu app
-}
+        console.log("ID del usuario:", data.id);
+        navigate("/"); // 👈 Reemplaza '/main' con la ruta que corresponda en tu app
+      }
     } catch (error) {
       console.error("Error al realizar la consulta:", error);
     }
@@ -58,10 +55,14 @@ if (!response.ok) {
           alt="Descripción de la imagen"
           className="w-24 h-24 mx-auto mb-4 rounded-full"
         />
-        <h2 className="text-2xl font-bold text-center mb-6 text-blue-800">Iniciar Sesión</h2>
+        <h2 className="text-2xl font-bold text-center mb-6 text-blue-800">
+          Iniciar Sesión
+        </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Correo electrónico</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Correo electrónico
+            </label>
             <input
               type="text"
               placeholder="Correo electrónico"
@@ -71,7 +72,9 @@ if (!response.ok) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Contraseña</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Contraseña
+            </label>
             <input
               type="password"
               placeholder="Contraseña"
@@ -88,7 +91,10 @@ if (!response.ok) {
           </button>
         </form>
         <p className="text-sm text-gray-500 mt-4 text-center">
-          ¿No tienes una cuenta? <a href="#" className="text-blue-600 hover:underline">Regístrate</a>
+          ¿No tienes una cuenta?{" "}
+          <a href="#" className="text-blue-600 hover:underline">
+            Regístrate
+          </a>
         </p>
       </div>
     </div>
