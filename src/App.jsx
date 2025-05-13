@@ -1,12 +1,16 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import React from "react";
+import CatalogoPagina from "./pages/CatalogoPagina";
 
 function App() {
   return (
-    <div>
+    <BrowserRouter>
       <Header />
-    </div>
+      <Routes>
+        <Route path="/" element={<div className="text-center mt-10">Página de inicio</div>} />
+        <Route path="/catalogo" element={<CatalogoPagina />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
