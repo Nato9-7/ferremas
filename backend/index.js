@@ -72,6 +72,34 @@ app.post('/login', (req, res) => {
   });
 });
 
+// Endpoint para registrar usuarios
+app.post('/register', (req, res) => {
+  const { nombre, apellido, correo, contraseña, numero_telefono } = req.body;
+
+  // Validar que todos los campos estén presentes
+  if (!nombre || !apellido || !correo || !contraseña || !numero_telefono) {
+    return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+  }
+
+  const query = `
+    INSERT INTO usuario (contraseña, correo, nombre, apellidos, numerotelf)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  db.query(
+    query,
+    [contraseña, correo, nombre, apellido, numero_telefono],
+    (err, results) => {
+      if (err) {
+        console.error('Error al registrar el usuario:', err);
+        return res.status(500).json({ error: 'Error al registrar el usuario' });
+      }
+
+      res.status(201).json({ mensaje: 'Usuario registrado exitosamente' });
+    }
+  );
+});
+
 //  Iniciar servidor
 app.listen(port, () => {
   console.log(`API corriendo en http://localhost:${port}`);
