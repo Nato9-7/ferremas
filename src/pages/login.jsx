@@ -43,6 +43,9 @@ function Login() {
         localStorage.setItem("token", data.token);
         localStorage.setItem("nombre", data.nombre);
 
+        // Forzar el evento de almacenamiento
+        window.dispatchEvent(new Event("storage"));
+
         navigate("/");
       }
 
