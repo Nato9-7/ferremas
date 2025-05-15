@@ -2,40 +2,40 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { useCarrito } from "../components/Carrito";
 
 const WebpayReturn = () => {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const [estado, setEstado] = useState("Procesando tu pago...");
+  const [procesado, setProcesado] = useState(false); // NUEVO
+  const carrito = useCarrito();
 
   useEffect(() => {
-    let yaProcesado = false;
-
     const token = params.get("token_ws");
-    if (token && !yaProcesado) {
+    if (token && !procesado) {
+      setProcesado(true); // Evita dobles requests
       axios
         .post("http://localhost:5000/webpay/commit", { token })
         .then((res) => {
-          console.log("Respuesta de Webpay:", res.data);
-          setEstado("✅ Pago exitoso.");
-          // Puedes mostrar mensaje de éxito o error aquí
+          if (res.data.success) {
+            setEstado("✅ Pago exitoso.");
+            setTimeout(() => {
+              carrito.vaciarCarrito();
+              navigate("/");
+            }, 3000);
+          } else {
+            setEstado(
+              "❌ Error al confirmar pago: " +
+                (res.data.message || "Transacción rechazada.")
+            );
+          }
         })
         .catch((err) => {
-          console.error("Error al confirmar pago:", err);
           setEstado("❌ Error al confirmar pago.");
         });
     }
-  }, [params]);
-
-  useEffect(() => {
-    if (estado.includes("Pago exitoso")) {
-      const timeout = setTimeout(() => {
-        navigate("/");
-      }, 3000);
-
-      return () => clearTimeout(timeout); // Cleanup timeout on component unmount
-    }
-  }, [estado, navigate]);
+  }, [params, procesado, carrito, navigate]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">

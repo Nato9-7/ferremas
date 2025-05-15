@@ -34,7 +34,13 @@ function Login() {
 
       const data = await response.json();
 
+
+      localStorage.setItem("usuario_id", data.id);
+
+      console.log("Token recibido:", data.token); // 👈 AQUÍ imprimes el token
+
       console.log("Token recibido:", data.token);
+
       console.log("ID del usuario:", data.id);
       console.log("Nombre del usuario:", data.nombre);
 

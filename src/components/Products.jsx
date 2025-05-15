@@ -55,7 +55,6 @@ const Products = () => {
                 <button
                   onClick={() => {
                     setTimeout(() => {
-                      alert("Producto agregado al carrito");
                       agregarAlCarrito(producto);
                     }, 500);
                   }}

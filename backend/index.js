@@ -12,6 +12,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/webpay", webpayRoutes);
+
+
 // Conexión a MySQL
 const db = mysql.createConnection({
   host: 'bodxhia1bgfd9lyers48-mysql.services.clever-cloud.com',
@@ -72,6 +74,8 @@ app.post('/login', (req, res) => {
   });
 });
 
+
+
 // Endpoint para registrar usuarios
 app.post('/register', (req, res) => {
   const { nombre, apellido, correo, contraseña, numero_telefono } = req.body;
@@ -99,6 +103,7 @@ app.post('/register', (req, res) => {
     }
   );
 });
+
 
 //  Iniciar servidor
 app.listen(port, () => {

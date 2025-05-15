@@ -2,7 +2,10 @@ import Header from "./components/Header";
 import Products from "./components/Products";
 import Login from "./pages/login";
 import Cart from "./pages/CartPage";
+
+import Footer from "./components/Footer";
 import Register from "./pages/Register";
+
 import WebpayReturn from "./pages/WebPayReturn";
 import { CarritoProvider } from "./components/Carrito";
 
@@ -21,6 +24,7 @@ function App() {
           <Route path="/CartPage" element={<Cart />} />
           <Route path="/webpay-return" element={<WebpayReturn />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </CarritoProvider>
   );

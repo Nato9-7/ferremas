@@ -18,11 +18,6 @@ const CarritoPage = () => {
 
   const handleCheckout = async () => {
     try {
-      const total = carrito.reduce(
-        (sum, producto) => sum + producto.precio * producto.cantidad,
-        0
-      );
-
       const buyOrder = `orden-${Date.now()}`; // Genera una orden única
       const sessionId = `session-${Date.now()}`; // Identificador de sesión
       const returnUrl = "http://localhost:5173/webpay-return"; // Ajusta según tu frontend
