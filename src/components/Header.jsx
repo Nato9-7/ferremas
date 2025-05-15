@@ -18,7 +18,10 @@ const links = [
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [nombre, setNombre] = useState(localStorage.getItem("nombre") || ", inicia sesión");
+
+  const [nombre, setNombre] = useState(
+    localStorage.getItem("nombre") || ", inicia sesión"
+  );
   const { mensaje } = useCarrito(); // ✅ Usar mensaje del carrito
 
   useEffect(() => {
@@ -53,7 +56,13 @@ const Header = () => {
               </PopoverButton>
               <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5">
                 <div className="p-2">
-                  {["Materiales de Construcción", "Herramientas", "Electricidad", "Fontanería", "Pinturas"].map((item) => (
+                  {[
+                    "Materiales de Construcción",
+                    "Herramientas",
+                    "Electricidad",
+                    "Fontanería",
+                    "Pinturas",
+                  ].map((item) => (
                     <a
                       key={item}
                       href="#"
@@ -123,7 +132,7 @@ const Header = () => {
                         window.location.href = "/";
                       }}
                     >
-                      Logout
+                      Cerrar sesión
                     </button>
                   )}
 
