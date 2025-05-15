@@ -2,11 +2,9 @@ const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const webpayRoutes = require("../backend/webpay.route.js");
-
-const jwt = require('jsonwebtoken'); // 👈 Importamos JWT
+const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
-
 
 const app = express();
 const port = 5000;
@@ -17,6 +15,7 @@ app.use(express.json());
 
 app.use("/webpay", webpayRoutes);
 
+// Servir imágenes estáticas
 app.use(
   '/ImgProductos',
   express.static(path.join(__dirname, '..', 'public', 'ImgProductos'))
@@ -25,7 +24,7 @@ app.use(
 // Configuración de multer para guardar imágenes en /public/ImgProductos
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const ruta = path.join(__dirname, '..', 'public', 'ImgProductos'); // <-- sube un nivel
+    const ruta = path.join(__dirname, '..', 'public', 'ImgProductos');
     cb(null, ruta);
   },
   filename: function (req, file, cb) {
@@ -34,11 +33,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Conexión a MySQL
-const db = mysql.createConnection({
-
-
-// ✅ Pool de conexiones
+// Pool de conexiones MySQL
 const db = mysql.createPool({
   host: 'bodxhia1bgfd9lyers48-mysql.services.clever-cloud.com',
   user: 'u0rtqxk97gcsgtoq',
@@ -49,7 +44,7 @@ const db = mysql.createPool({
   queueLimit: 0
 });
 
-// ✅ Endpoint productos (con campo `categoria`)
+// Endpoint para obtener productos
 app.get('/producto', (req, res) => {
   const query = 'SELECT codigoProducto, nombre, precio, marca, categoria FROM producto';
   db.query(query, (err, results) => {
@@ -57,7 +52,7 @@ app.get('/producto', (req, res) => {
       console.error('Error al consultar productos:', err);
       res.status(500).json({ error: 'Error al obtener los productos' });
     } else {
-      res.json(results); // 👈 Esto debe ser un array
+      res.json(results);
     }
   });
 });
@@ -65,28 +60,28 @@ app.get('/producto', (req, res) => {
 // Endpoint para subir producto con imagen
 app.post('/producto', upload.single('imagen'), (req, res) => {
   console.log("Entró al endpoint /producto");
-  const { nombre, precio, marca } = req.body;
+  const { nombre, precio, marca, categoria } = req.body; // <-- agrega categoria
   const imagen = req.file ? req.file.filename : null;
 
-  console.log("Datos recibidos:", { nombre, precio, marca, imagen });
+  console.log("Datos recibidos:", { nombre, precio, marca, categoria, imagen });
 
-  if (!nombre || !precio || !marca || !imagen) {
-    console.error('Campos faltantes:', { nombre, precio, marca, imagen });
+  if (!nombre || !precio || !marca || !categoria || !imagen) {
+    console.error('Campos faltantes:', { nombre, precio, marca, categoria, imagen });
     return res.status(400).json({ error: 'Todos los campos son obligatorios' });
   }
 
   const codigoProducto = `FER-${Math.floor(100000 + Math.random() * 900000)}`;
   const codigo = nombre.trim().substring(0, 4).toUpperCase() + '-' + precio;
 
-  console.log("Intentando insertar:", { codigoProducto, nombre, precio, marca, codigo });
+  console.log("Intentando insertar:", { codigoProducto, nombre, precio, marca, categoria, codigo });
 
   const query = `
-    INSERT INTO producto (codigoProducto, nombre, precio, marca, codigo)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO producto (codigoProducto, nombre, precio, marca, categoria, codigo)
+    VALUES (?, ?, ?, ?, ?, ?)
   `;
   db.query(
     query,
-    [codigoProducto, nombre, precio, marca, codigo],
+    [codigoProducto, nombre, precio, marca, categoria, codigo],
     (err, results) => {
       if (err) {
         console.error('Error al guardar el producto:', err);
@@ -99,7 +94,7 @@ app.post('/producto', upload.single('imagen'), (req, res) => {
   );
 });
 
-// 🔐 Login con token JWT
+// Login con token JWT
 app.post('/login', (req, res) => {
   const { correo, contraseña } = req.body;
 
@@ -136,7 +131,7 @@ app.post('/login', (req, res) => {
   });
 });
 
-// 🧾 Endpoint para registrar usuarios
+// Endpoint para registrar usuarios
 app.post('/register', (req, res) => {
   const { nombre, apellido, correo, contraseña, numero_telefono } = req.body;
 
@@ -163,7 +158,6 @@ app.post('/register', (req, res) => {
   );
 });
 
-
 // Endpoint para obtener datos del usuario autenticado
 app.get('/usuario', (req, res) => {
   const authHeader = req.headers.authorization;
@@ -177,17 +171,16 @@ app.get('/usuario', (req, res) => {
       [decoded.id],
       (err, results) => {
         if (err || results.length === 0) return res.status(404).json({ error: "Usuario no encontrado" });
-        console.log("Respuesta usuario:", results[0]); // <-- Agrega este log para verificar
+        console.log("Respuesta usuario:", results[0]);
         res.json(results[0]);
       }
     );
-  } catch {
-    res.status(401).json({ error: "Token inválido" });
+  } catch (error) {
+    res.status(401).json({ error: "Token inválido", detalle: error.message });
   }
 });
 
-//  Iniciar servidor
-
+// Iniciar servidor
 app.listen(port, () => {
   console.log(`API corriendo en http://localhost:${port}`);
 });

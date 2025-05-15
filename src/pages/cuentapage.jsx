@@ -9,6 +9,7 @@ const CuentaPage = () => {
     nombre: "",
     precio: "",
     marca: "",
+    categoria: "", // Nuevo campo
   });
   const [imagen, setImagen] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -56,15 +57,16 @@ const CuentaPage = () => {
     e.preventDefault();
 
     // Validación simple
-    if (!producto.nombre || !producto.precio || !producto.marca) {
+    if (!producto.nombre || !producto.precio || !producto.marca || !producto.categoria) {
       alert("Completa todos los campos");
       return;
     }
 
     const formData = new FormData();
     formData.append("nombre", producto.nombre);
-    formData.append("precio", parseFloat( producto.precio)); // O parseFloat si tu API lo requiere
+    formData.append("precio", parseFloat(producto.precio)); // O parseFloat si tu API lo requiere
     formData.append("marca", producto.marca);
+    formData.append("categoria", producto.categoria);
     if (imagen) formData.append("imagen", imagen);
 
     try {
@@ -78,7 +80,7 @@ const CuentaPage = () => {
       const data = await response.json();
       alert(`Producto subido correctamente: ${data.mensaje}`);
       setShowForm(false);
-      setProducto({ nombre: "", precio: "", marca: "" });
+      setProducto({ nombre: "", precio: "", marca: "", categoria: "" });
       setPreview(null);
       setImagen(null);
     } catch (error) {
@@ -98,7 +100,7 @@ const CuentaPage = () => {
           width={200}
         />
         <div className="cuenta-dato">
-          <strong>Nombre:</strong> {usuario.nombre}  {usuario.apellido || usuario.apellidos}
+          <strong>Nombre:</strong> {usuario.nombre} {usuario.apellido || usuario.apellidos}
         </div>
         <div className="cuenta-dato">
           <strong>Correo:</strong> {usuario.correo}
@@ -144,6 +146,31 @@ const CuentaPage = () => {
                       onChange={handleInputChange}
                       required
                     />
+                  </label>
+                  <label>
+                    Categoría:
+                    <select
+                      name="categoria"
+                      value={producto.categoria}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="">Selecciona una categoría</option>
+                      <option value="Baño y cocina">Baño y cocina</option>
+                      <option value="Calefaccion">Calefaccion</option>
+                      <option value="Construccion">Construccion</option>
+<option value="Electricidad">Electricidad</option>
+<option value="Herramientas">Herramientas</option>
+<option value="Iluminacion">Iluminacion</option>
+<option value="Jardineria">Jardineria</option>
+<option value="Linea Blanca">Linea Blanca</option>
+<option value="Maquinaria/Equipo electrico">Maquinaria/Equipo electrico</option>
+<option value="Pintura y adhesivos">Pintura y adhesivos</option>
+<option value="Plomeria">Plomeria</option>
+
+                      
+                      {/* Agrega más opciones según tus necesidades */}
+                    </select>
                   </label>
                   <label>
                     Imagen:
