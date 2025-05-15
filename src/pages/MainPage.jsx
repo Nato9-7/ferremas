@@ -16,11 +16,17 @@ const MainPage = () => {
           o de gran envergadura.
         </p>
 
+        {/* Mensaje motivacional */}
+        <p className="text-lg font-semibold text-gray-800 mb-4">
+          ¡Comienza a comprar y encuentra todo lo que necesitas!
+        </p>
+
+        {/* Botón actualizado */}
         <Link
-          to="/"
+          to="/catalogo"
           className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-full text-lg transition-transform transform hover:scale-105 active:scale-95 shadow-md"
         >
-          Ir al inicio
+          Ir al catálogo
         </Link>
       </div>
     </div>

@@ -33,25 +33,14 @@ const Header = () => {
 
   return (
     <header className="bg-blue-800 text-white shadow-lg">
-      {/* ✅ Mensaje de confirmación visual */}
-      {mensaje && (
-        <div className="fixed top-4 right-4 z-50 bg-green-600 text-white px-4 py-2 rounded shadow-md animate-fade-in">
-          {mensaje}
-        </div>
-      )}
-
       <div className="container mx-auto px-2 py-2">
         <div className="flex justify-between items-center">
-          <Link
-            to={"/"}
-            className="flex items-center space-x-2 transition-transform duration-300 hover:scale-105 active:scale-95"
-          >
+          <Link to={"/"} className="flex items-center space-x-2">
             <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center">
               <span className="text-blue-600 font-bold">FM</span>
             </div>
             <h1 className="text-xl font-bold">Ferremas</h1>
           </Link>
-
 
           <PopoverGroup className="hidden lg:flex lg:gap-x-12 lg:items-center">
             <Popover className="relative">
@@ -64,20 +53,14 @@ const Header = () => {
               </PopoverButton>
               <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5">
                 <div className="p-2">
-                  {[
-                    "Materiales de Construcción",
-                    "Herramientas",
-                    "Electricidad",
-                    "Fontanería",
-                    "Pinturas",
-                  ].map((categoria) => (
-                    <Link
-                      key={categoria}
-                      to={`/catalogo?categoria=${encodeURIComponent(categoria)}`}
+                  {["Materiales de Construcción", "Herramientas", "Electricidad", "Fontanería", "Pinturas"].map((item) => (
+                    <a
+                      key={item}
+                      href="#"
                       className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
                     >
-                      {categoria}
-                    </Link>
+                      {item}
+                    </a>
                   ))}
                 </div>
               </PopoverPanel>
@@ -172,9 +155,9 @@ const Header = () => {
             </button>
           </div>
 
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-6 relative">
             <Link
-              to="CartPage"
+              to="/CartPage"
               className="flex items-center space-x-1 cursor-pointer"
             >
               <svg
@@ -193,6 +176,13 @@ const Header = () => {
               </svg>
               <span className="text-sm">Mis compras</span>
             </Link>
+
+            {/* Mensaje debajo del botón "Mis compras" */}
+            {mensaje && (
+              <div className="absolute top-full mt-2 left-0 w-max bg-green-600 text-white px-4 py-1 rounded shadow-md text-sm z-50">
+                {mensaje}
+              </div>
+            )}
           </div>
         </div>
       </div>

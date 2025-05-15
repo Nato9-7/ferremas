@@ -21,21 +21,21 @@ export const CarritoProvider = ({ children }) => {
     setTimeout(() => setMensaje(""), 3000);
   };
 
-  const agregarAlCarrito = (producto) => {
+  const agregarAlCarrito = (producto, cantidad = 1) => {
     setCarrito((prev) => {
       const existe = prev.find(
         (p) => p.codigoProducto === producto.codigoProducto
       );
       if (existe) {
-        mostrarMensaje("✔️ Se aumentó la cantidad del producto");
+        mostrarMensaje(`✔️ Se aumentó la cantidad (+${cantidad})`);
         return prev.map((p) =>
           p.codigoProducto === producto.codigoProducto
-            ? { ...p, cantidad: p.cantidad + 1 }
+            ? { ...p, cantidad: p.cantidad + cantidad }
             : p
         );
       } else {
-        mostrarMensaje("🛒 Producto agregado al carrito");
-        return [...prev, { ...producto, cantidad: 1 }];
+        mostrarMensaje(`🛒 Producto agregado x${cantidad}`);
+        return [...prev, { ...producto, cantidad }];
       }
     });
   };
@@ -71,7 +71,7 @@ export const CarritoProvider = ({ children }) => {
         agregarAlCarrito,
         eliminarDelCarrito,
         vaciarCarrito,
-        mensaje, // exportamos mensaje
+        mensaje,
       }}
     >
       {children}
