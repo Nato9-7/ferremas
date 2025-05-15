@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Popover,
@@ -17,7 +17,9 @@ const links = [
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [nombre, setNombre] = useState(localStorage.getItem("nombre") || ", inicia sesión");
+  const [nombre, setNombre] = useState(
+    localStorage.getItem("nombre") || ", inicia sesión"
+  );
 
   useEffect(() => {
     // Actualizar el estado del nombre cuando cambie localStorage
@@ -58,7 +60,13 @@ const Header = () => {
               </PopoverButton>
               <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5">
                 <div className="p-2">
-                  {["Materiales de Construcción", "Herramientas", "Electricidad", "Fontanería", "Pinturas"].map((item) => (
+                  {[
+                    "Materiales de Construcción",
+                    "Herramientas",
+                    "Electricidad",
+                    "Fontanería",
+                    "Pinturas",
+                  ].map((item) => (
                     <a
                       key={item}
                       href="#"
@@ -133,7 +141,7 @@ const Header = () => {
                         window.location.href = "/"; // Redirigir al inicio
                       }}
                     >
-                      Logout
+                      Cerrar sesión
                     </button>
                   )}
 
