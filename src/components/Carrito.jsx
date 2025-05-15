@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 const Carrito = createContext();
 
@@ -10,24 +10,32 @@ export const CarritoProvider = ({ children }) => {
     return carritoGuardado ? JSON.parse(carritoGuardado) : [];
   });
 
+  const [mensaje, setMensaje] = useState("");
+
   useEffect(() => {
-    // Guardar en localStorage cada vez que cambie
     localStorage.setItem("carrito", JSON.stringify(carrito));
   }, [carrito]);
 
-  const agregarAlCarrito = (producto) => {
+  const mostrarMensaje = (texto) => {
+    setMensaje(texto);
+    setTimeout(() => setMensaje(""), 3000);
+  };
+
+  const agregarAlCarrito = (producto, cantidad = 1) => {
     setCarrito((prev) => {
       const existe = prev.find(
         (p) => p.codigoProducto === producto.codigoProducto
       );
       if (existe) {
+        mostrarMensaje(`✔️ Se aumentó la cantidad (+${cantidad})`);
         return prev.map((p) =>
           p.codigoProducto === producto.codigoProducto
-            ? { ...p, cantidad: p.cantidad + 1 }
+            ? { ...p, cantidad: p.cantidad + cantidad }
             : p
         );
       } else {
-        return [...prev, { ...producto, cantidad: 1 }];
+        mostrarMensaje(`🛒 Producto agregado x${cantidad}`);
+        return [...prev, { ...producto, cantidad }];
       }
     });
   };
@@ -38,12 +46,14 @@ export const CarritoProvider = ({ children }) => {
       if (!producto) return prev;
 
       if (producto.cantidad > 1) {
+        mostrarMensaje("➖ Se redujo la cantidad del producto");
         return prev.map((p) =>
           p.codigoProducto === codigoProducto
             ? { ...p, cantidad: p.cantidad - 1 }
             : p
         );
       } else {
+        mostrarMensaje("🗑️ Producto eliminado del carrito");
         return prev.filter((p) => p.codigoProducto !== codigoProducto);
       }
     });
@@ -51,11 +61,18 @@ export const CarritoProvider = ({ children }) => {
 
   const vaciarCarrito = () => {
     setCarrito([]);
+    mostrarMensaje("🧹 Carrito vaciado");
   };
 
   return (
     <Carrito.Provider
-      value={{ carrito, agregarAlCarrito, eliminarDelCarrito, vaciarCarrito }}
+      value={{
+        carrito,
+        agregarAlCarrito,
+        eliminarDelCarrito,
+        vaciarCarrito,
+        mensaje,
+      }}
     >
       {children}
     </Carrito.Provider>

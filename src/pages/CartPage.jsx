@@ -1,8 +1,11 @@
 import { useCarrito } from "../components/Carrito";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import { useState } from "react"; // ✅ Necesario para manejar el mensaje
 
 const CarritoPage = () => {
   const { carrito, eliminarDelCarrito, agregarAlCarrito } = useCarrito();
+  const [errorPago, setErrorPago] = useState(""); // ✅ Estado para el mensaje
 
   const total = carrito.reduce(
     (sum, producto) => sum + producto.precio * producto.cantidad,
@@ -14,13 +17,11 @@ const CarritoPage = () => {
     0
   );
 
-  // ...
-
   const handleCheckout = async () => {
     try {
-      const buyOrder = `orden-${Date.now()}`; // Genera una orden única
-      const sessionId = `session-${Date.now()}`; // Identificador de sesión
-      const returnUrl = "http://localhost:5173/webpay-return"; // Ajusta según tu frontend
+      const buyOrder = `orden-${Date.now()}`;
+      const sessionId = `session-${Date.now()}`;
+      const returnUrl = "http://localhost:5173/webpay-return";
 
       const response = await axios.post("http://localhost:5000/webpay/create", {
         amount: total,
@@ -31,7 +32,6 @@ const CarritoPage = () => {
 
       const { token, url } = response.data;
 
-      // Redirige al formulario de pago de Webpay
       const form = document.createElement("form");
       form.method = "POST";
       form.action = url;
@@ -62,19 +62,22 @@ const CarritoPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 mt-10   flex flex-col lg:flex-row gap-6 rounded ">
+    <div className="container mx-auto px-4 mt-10 flex flex-col lg:flex-row gap-6 rounded">
       {/* Sección productos */}
       <div className="flex-1 bg-white p-6 rounded shadow">
         {carrito.length === 0 ? (
-          <>
-            <div className="text-center text-black mt-10">
-              <h3 className="text-2xl">Tu carro está vacío</h3>
-              <p>
-                Inicia sesión para ver los productos que habías guardado en tu
-                Carro.
-              </p>
-            </div>
-          </>
+          <div className="text-center bg-red-100 border border-red-300 text-red-600 mt-10 p-6 rounded">
+            <h3 className="text-2xl font-semibold">🚫 Tu carrito está vacío</h3>
+            <p className="mt-2 text-sm text-gray-700">
+              Agrega productos desde el catálogo para comenzar tu compra.
+            </p>
+            <Link
+              to="/catalogo"
+              className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              Ir al catálogo
+            </Link>
+          </div>
         ) : (
           <div className="grid gap-4 ">
             {carrito.map((producto, index) => (
@@ -121,6 +124,14 @@ const CarritoPage = () => {
         <h2 className="text-xl font-bold mb-4 text-black">
           Resumen de la compra
         </h2>
+
+        {/* Mensaje de error si ocurre */}
+        {errorPago && (
+          <div className="mb-4 px-4 py-2 bg-red-100 text-red-700 border border-red-300 rounded text-sm text-center">
+            {errorPago}
+          </div>
+        )}
+
         <div className="flex justify-between mb-2 text-black">
           <span>Productos ({totalLength})</span>
           <span>${total.toLocaleString()}</span>
