@@ -32,7 +32,7 @@ const Footer = () => {
         {/* Información de la empresa */}
         <div className="border-t border-gray-300 pt-6">
           <p className="text-black-700 mb-2">
-            © TODOS LOS DERECHOS RESERVADOS SODINAS
+            © TODOS LOS DERECHOS RESERVADOS FERREMAS
           </p>
           <p className="text-black-700 mb-4">Resuelve Norte 660.1 Las Condes</p>
 
