@@ -7,30 +7,28 @@ import {
   PopoverPanel,
 } from "@headlessui/react";
 import { Bars3Icon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import { useCarrito } from "../components/Carrito"; // ✅ Importar el contexto del carrito
 
 const links = [
   { label: "Iniciar sesión", to: "/login" },
   { label: "Crear cuenta", to: "/register" },
   { label: "Mi cuenta", to: "/account" },
-  { label: "Logout", isButton: true }, // Agregar Logout como un botón
+  { label: "Logout", isButton: true },
 ];
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const [nombre, setNombre] = useState(
     localStorage.getItem("nombre") || ", inicia sesión"
   );
+  const { mensaje } = useCarrito(); // ✅ Usar mensaje del carrito
 
   useEffect(() => {
-    // Actualizar el estado del nombre cuando cambie localStorage
     const handleStorageChange = () => {
       setNombre(localStorage.getItem("nombre") || ", inicia sesión");
     };
-
-    // Escuchar cambios en localStorage
     window.addEventListener("storage", handleStorageChange);
-
-    // Limpiar el listener al desmontar el componente
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
@@ -41,14 +39,12 @@ const Header = () => {
       <div className="container mx-auto px-2 py-2">
         <div className="flex justify-between items-center">
           <Link to={"/"} className="flex items-center space-x-2">
-            {/* Logo */}
             <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center">
               <span className="text-blue-600 font-bold">FM</span>
             </div>
             <h1 className="text-xl font-bold">Ferremas</h1>
           </Link>
 
-          {/* Categorías (versión desktop) */}
           <PopoverGroup className="hidden lg:flex lg:gap-x-12 lg:items-center">
             <Popover className="relative">
               <PopoverButton className="flex items-center gap-x-1 font-semibold text-white-900">
@@ -79,7 +75,6 @@ const Header = () => {
               </PopoverPanel>
             </Popover>
 
-            {/* Barra de búsqueda */}
             <div className="hidden md:block px-3 py-2">
               <div className="relative">
                 <input
@@ -107,7 +102,6 @@ const Header = () => {
             </div>
           </PopoverGroup>
 
-          {/* Saludo y opciones del usuario */}
           <PopoverGroup className="hidden lg:flex lg:gap-x-12 lg:items-center">
             <Popover className="relative">
               <PopoverButton className="flex items-center gap-x-1 font-semibold text-white-900">
@@ -119,7 +113,6 @@ const Header = () => {
               </PopoverButton>
               <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5">
                 <div className="p-2">
-                  {/* Mostrar "Iniciar sesión" solo si el token no está activo */}
                   {!localStorage.getItem("token") && (
                     <Link
                       to="/login"
@@ -129,23 +122,20 @@ const Header = () => {
                     </Link>
                   )}
 
-                  {/* Mostrar "Logout" solo si el token está activo */}
                   {localStorage.getItem("token") && (
                     <button
                       className="block w-full text-left rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
                       onClick={() => {
-                        // Eliminar el token y redirigir al login
                         localStorage.removeItem("token");
                         localStorage.removeItem("nombre");
-                        window.dispatchEvent(new Event("storage")); // Actualizar el estado del Header
-                        window.location.href = "/"; // Redirigir al inicio
+                        window.dispatchEvent(new Event("storage"));
+                        window.location.href = "/";
                       }}
                     >
                       Cerrar sesión
                     </button>
                   )}
 
-                  {/* Otras opciones del menú */}
                   <Link
                     to="/register"
                     className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
@@ -163,7 +153,6 @@ const Header = () => {
             </Popover>
           </PopoverGroup>
 
-          {/* Menú móvil */}
           <div className="flex lg:hidden">
             <button
               type="button"
@@ -175,10 +164,9 @@ const Header = () => {
             </button>
           </div>
 
-          {/* Carrito */}
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-6 relative">
             <Link
-              to="CartPage"
+              to="/CartPage"
               className="flex items-center space-x-1 cursor-pointer"
             >
               <svg
@@ -197,6 +185,13 @@ const Header = () => {
               </svg>
               <span className="text-sm">Mis compras</span>
             </Link>
+
+            {/* Mensaje debajo del botón "Mis compras" */}
+            {mensaje && (
+              <div className="absolute top-full mt-2 left-0 w-max bg-green-600 text-white px-4 py-1 rounded shadow-md text-sm z-50">
+                {mensaje}
+              </div>
+            )}
           </div>
         </div>
       </div>
