@@ -59,3 +59,22 @@
   margin-right: auto;
   margin-bottom: 24px; /* Opcional: espacio debajo de la imagen */
 }
+
+/* Botón especial */
+.cuenta-boton-especial {
+  display: block;
+  margin: 32px auto 0 auto;
+  background: #193CB8;
+  color: #fff;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cuenta-boton-especial:hover {
+  background: #1e3a8a;
+}

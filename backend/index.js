@@ -108,12 +108,12 @@ app.get('/usuario', (req, res) => {
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
-    // Busca el usuario en la base de datos usando el ID del token
     db.query(
-      "SELECT nombre, apellidos as apellido, correo, numerotelf as numero_telefono FROM usuario WHERE id = ?",
+      "SELECT id, nombre, apellidos as apellido, correo, numerotelf as numero_telefono FROM usuario WHERE id = ?",
       [decoded.id],
       (err, results) => {
         if (err || results.length === 0) return res.status(404).json({ error: "Usuario no encontrado" });
+        console.log("Respuesta usuario:", results[0]); // <-- Agrega este log para verificar
         res.json(results[0]);
       }
     );

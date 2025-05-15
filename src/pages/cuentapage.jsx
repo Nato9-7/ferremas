@@ -30,6 +30,8 @@ const CuentaPage = () => {
   if (loading) return <div>Cargando...</div>;
   if (!usuario) return <div>No se pudo cargar la información de tu cuenta.</div>;
 
+  console.log("Usuario cargado:", usuario, "ID:", usuario && usuario.id, "Tipo:", typeof usuario && typeof usuario.id);
+
   return (
     <div className="cuenta-container">
       <div className="cuenta-card">
@@ -38,8 +40,8 @@ const CuentaPage = () => {
           src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
           alt="Usuario"
           className="cuenta-avatar"
-          width={200}>
-          </img>
+          width={200}
+        />
         <div className="cuenta-dato">
           <strong>Nombre:</strong> {usuario.nombre}  {usuario.apellido || usuario.apellidos}
         </div>
@@ -49,6 +51,12 @@ const CuentaPage = () => {
         <div className="cuenta-dato">
           <strong>Número de Teléfono:</strong> {usuario.numero_telefono || usuario.numerotelf}
         </div>
+        {/* Mostrar botón solo si el id es 7 */}
+        {Number(usuario.id) === 7 && (
+          <button className="cuenta-boton-especial">
+            Subir producto
+          </button>
+        )}
       </div>
     </div>
   );
