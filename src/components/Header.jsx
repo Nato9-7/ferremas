@@ -12,8 +12,10 @@ import { useCarrito } from "../components/Carrito"; // ✅ Importar el contexto 
 const links = [
   { label: "Iniciar sesión", to: "/login" },
   { label: "Crear cuenta", to: "/register" },
-  { label: "Mi cuenta", to: "/account" },
-  { label: "Logout", isButton: true },
+
+  { label: "Mi cuenta", to: "/cuentapage" },
+  { label: "Logout", isButton: true }, // Agregar Logout como un botón
+
 ];
 
 const Header = () => {
@@ -136,18 +138,23 @@ const Header = () => {
                     </button>
                   )}
 
+
                   <Link
                     to="/register"
                     className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
                   >
                     Crear cuenta
                   </Link>
-                  <Link
-                    to="/account"
-                    className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
-                  >
-                    Mi cuenta
-                  </Link>
+
+                  {/* Mostrar "Mi cuenta" solo si el token está activo */}
+                  {localStorage.getItem("token") && (
+                    <Link
+                      to="/cuentapage"
+                      className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+                    >
+                      Mi cuenta
+                    </Link>
+                  )}
                 </div>
               </PopoverPanel>
             </Popover>
