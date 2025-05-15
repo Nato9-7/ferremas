@@ -1,16 +1,31 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
-import CatalogoPagina from "./pages/CatalogoPagina";
+import Login from "./pages/login";
+import Cart from "./pages/CartPage";
+import Footer from "./components/Footer";
+import Register from "./pages/Register";
+import WebpayReturn from "./pages/WebPayReturn";
+import { CarritoProvider } from "./components/Carrito";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import React from "react";
+import MainPage from "./pages/MainPage";
+import Catalogo from "./pages/Catalogo";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Header />
-      <Routes>
-        <Route path="/" element={<div className="text-center mt-10">Página de inicio</div>} />
-        <Route path="/catalogo" element={<CatalogoPagina />} />
-      </Routes>
-    </BrowserRouter>
+    <CarritoProvider>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<MainPage />} /> {/* Página principal */}
+          <Route path="/catalogo" element={<Catalogo />} /> {/* Catálogo */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/CartPage" element={<Cart />} />
+          <Route path="/webpay-return" element={<WebpayReturn />} />
+        </Routes>
+        <Footer />
+      </BrowserRouter>
+    </CarritoProvider>
   );
 }
 

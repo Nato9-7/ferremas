@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   Popover,
   PopoverButton,
@@ -6,21 +7,51 @@ import {
   PopoverPanel,
 } from "@headlessui/react";
 import { Bars3Icon, ChevronDownIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { useCarrito } from "../components/Carrito"; // ✅ Importar el contexto del carrito
+
+const links = [
+  { label: "Iniciar sesión", to: "/login" },
+  { label: "Crear cuenta", to: "/register" },
+  { label: "Mi cuenta", to: "/account" },
+  { label: "Logout", isButton: true },
+];
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [nombre, setNombre] = useState(localStorage.getItem("nombre") || ", inicia sesión");
+  const { mensaje } = useCarrito(); // ✅ Usar mensaje del carrito
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setNombre(localStorage.getItem("nombre") || ", inicia sesión");
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   return (
     <header className="bg-blue-800 text-white shadow-lg">
+      {/* ✅ Mensaje de confirmación visual */}
+      {mensaje && (
+        <div className="fixed top-4 right-4 z-50 bg-green-600 text-white px-4 py-2 rounded shadow-md animate-fade-in">
+          {mensaje}
+        </div>
+      )}
+
       <div className="container mx-auto px-2 py-2">
         <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-2">
+          <Link
+            to={"/"}
+            className="flex items-center space-x-2 transition-transform duration-300 hover:scale-105 active:scale-95"
+          >
             <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center">
               <span className="text-blue-600 font-bold">FM</span>
             </div>
             <h1 className="text-xl font-bold">Ferremas</h1>
-          </div>
+          </Link>
+
 
           <PopoverGroup className="hidden lg:flex lg:gap-x-12 lg:items-center">
             <Popover className="relative">
@@ -31,7 +62,6 @@ const Header = () => {
                   className="size-5 flex-none text-gray-400"
                 />
               </PopoverButton>
-
               <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5">
                 <div className="p-2">
                   {[
@@ -40,14 +70,14 @@ const Header = () => {
                     "Electricidad",
                     "Fontanería",
                     "Pinturas",
-                  ].map((item) => (
-                    <a
-                      key={item}
-                      href="#"
+                  ].map((categoria) => (
+                    <Link
+                      key={categoria}
+                      to={`/catalogo?categoria=${encodeURIComponent(categoria)}`}
                       className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
                     >
-                      {item}
-                    </a>
+                      {categoria}
+                    </Link>
                   ))}
                 </div>
               </PopoverPanel>
@@ -78,18 +108,57 @@ const Header = () => {
                 </button>
               </div>
             </div>
+          </PopoverGroup>
 
-            {/* Enlace de Catálogo reemplazado por Link */}
-            <Link to="/catalogo" className="text-sm/6 font-semibold text-white-900 py-2">
-              Catálogo
-            </Link>
+          <PopoverGroup className="hidden lg:flex lg:gap-x-12 lg:items-center">
+            <Popover className="relative">
+              <PopoverButton className="flex items-center gap-x-1 font-semibold text-white-900">
+                <span className="text-sm">Hola {nombre}</span>
+                <ChevronDownIcon
+                  aria-hidden="true"
+                  className="size-5 flex-none text-gray-400"
+                />
+              </PopoverButton>
+              <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5">
+                <div className="p-2">
+                  {!localStorage.getItem("token") && (
+                    <Link
+                      to="/login"
+                      className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+                    >
+                      Iniciar sesión
+                    </Link>
+                  )}
 
-            <a href="#" className="text-sm/6 font-semibold text-white-900 py-2">
-              Ofertas
-            </a>
-            <a href="#" className="text-sm/6 font-semibold text-white-900 py-2">
-              Servicios
-            </a>
+                  {localStorage.getItem("token") && (
+                    <button
+                      className="block w-full text-left rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+                      onClick={() => {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("nombre");
+                        window.dispatchEvent(new Event("storage"));
+                        window.location.href = "/";
+                      }}
+                    >
+                      Logout
+                    </button>
+                  )}
+
+                  <Link
+                    to="/register"
+                    className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+                  >
+                    Crear cuenta
+                  </Link>
+                  <Link
+                    to="/account"
+                    className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+                  >
+                    Mi cuenta
+                  </Link>
+                </div>
+              </PopoverPanel>
+            </Popover>
           </PopoverGroup>
 
           <div className="flex lg:hidden">
@@ -103,108 +172,11 @@ const Header = () => {
             </button>
           </div>
 
-          {mobileMenuOpen && (
-            <div className="lg:hidden">
-              <div
-                className="fixed inset-0 z-10 bg-gray-900/50"
-                onClick={() => setMobileMenuOpen(false)}
-              ></div>
-              <div className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-                <div className="flex items-center justify-between">
-                  <a href="#" className="-m-1.5 p-1.5">
-                    <span className="sr-only">Ferremas</span>
-                    <img
-                      className="h-8 w-auto"
-                      src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                      alt=""
-                    />
-                  </a>
-                  <button
-                    type="button"
-                    className="-m-2.5 rounded-md p-2.5 text-gray-700"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <span className="sr-only">Cerrar menu</span>
-                    <svg
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-                <div className="mt-6 flow-root">
-                  <div className="-my-6 divide-y divide-gray-500/10">
-                    <div className="space-y-2 py-6">
-                      <div className="w-full">
-                        <button className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                          Categorías
-                          <ChevronDownIcon className="h-5 w-5 flex-none" />
-                        </button>
-                        <div className="mt-2 space-y-2 pl-5">
-                          {[
-                            "Materiales de Construcción",
-                            "Herramientas",
-                            "Electricidad",
-                            "Fontanería",
-                            "Pinturas",
-                          ].map((item) => (
-                            <a
-                              key={item}
-                              href="#"
-                              className="block rounded-md py-2 pl-3 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                            >
-                              {item}
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Enlace Catálogo móvil actualizado */}
-                      <Link to="/catalogo" className="block text-sm font-semibold text-gray-900 hover:bg-gray-100 rounded-md px-3 py-2">
-                        Catálogo
-                      </Link>
-                      <a href="#" className="block text-sm font-semibold text-gray-900 hover:bg-gray-100 rounded-md px-3 py-2">
-                        Ofertas
-                      </a>
-                      <a href="#" className="block text-sm font-semibold text-gray-900 hover:bg-gray-100 rounded-md px-3 py-2">
-                        Servicios
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
           <div className="flex items-center space-x-6">
-            <div className="flex items-center space-x-1 cursor-pointer">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-white-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-              <span className="text-sm">Hola, Inicia sesión</span>
-            </div>
-
-            <div className="flex items-center space-x-1 cursor-pointer">
+            <Link
+              to="CartPage"
+              className="flex items-center space-x-1 cursor-pointer"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5 text-white-600"
@@ -220,33 +192,7 @@ const Header = () => {
                 />
               </svg>
               <span className="text-sm">Mis compras</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between px-4 py-3 text-sm">
-          <div className="flex items-center space-x-1 cursor-pointer">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-white-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
-            <span>Ingresa tu ubicación</span>
+            </Link>
           </div>
         </div>
       </div>
