@@ -1,4 +1,3 @@
-
 const express = require("express");
 const router = express.Router();
 
@@ -25,7 +24,7 @@ router.post("/create", async (req, res) => {
     
     const response = await tx.create(buyOrder, sessionId, amount, returnUrl);
     console.log("Respuesta de tx.create:", response); // Depuración
-
+    console.log("Token:", response.token); // Depuración
     res.json({
       token: response.token,
       url: response.url,
@@ -39,31 +38,60 @@ router.post("/create", async (req, res) => {
 router.post("/commit", async (req, res) => {
   try {
     const { token } = req.body;
-    
-    // Primero verifica el estado
     const status = await tx.status(token);
-    if (status.status === 'AUTHORIZED') {
+
+    // Verifica ambos: status y response_code
+    if (status.status === 'AUTHORIZED' && status.response_code === 0) {
+      console.log("ESTA WEA ENTRO 1"); // Depuración
       return res.json({
         success: true,
-        message: "Transacción ya estaba autorizada",
+        message: "Transacción autorizada correctamente",
         ...status
       });
     }
 
-
+    // Si no está autorizada, intenta commit
     const response = await tx.commit(token);
-    res.json({
-      success: true,
-      ...response
-    });
+
+    if (response.status === 'AUTHORIZED' && response.response_code === 0) {
+      console.log("ESTA WEA ENTRO 2"); 
+      return res.json({
+        success: true,
+        message: "Transacción autorizada correctamente",
+        ...response
+      });
+    } else {
+      console.log("ESTA WEA NO ENTROOO 3");
+      return res.json({
+        success: false,
+        message: "Transacción rechazada o no autorizada",
+        ...response
+      });
+    }
   } catch (error) {
-    console.error("Error en /webpay/commit:", error);
-    res.status(500).json({ 
-      success: false,
-      error: "Error al confirmar transacción",
-      details: error.message
-    });
+  if (
+    error.message &&
+    error.message.includes("Transaction already locked by another process")
+  ) {
+    // Intenta obtener el status actual y devolverlo
+    try {
+      const status = await tx.status(req.body.token);
+      return res.status(200).json({
+        success: status.status === 'AUTHORIZED' && status.response_code === 0,
+        message: "Transacción ya estaba siendo procesada",
+        ...status
+      });
+    } catch (e) {
+      
+    }
   }
+  console.error("Error en /webpay/commit:", error);
+  res.status(500).json({ 
+    success: false,
+    error: "Error al confirmar transacción",
+    details: error.message
+  });
+}
 });
 
 module.exports = router;

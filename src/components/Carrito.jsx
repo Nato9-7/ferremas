@@ -49,8 +49,14 @@ export const CarritoProvider = ({ children }) => {
     });
   };
 
+  const vaciarCarrito = () => {
+    setCarrito([]);
+  };
+
   return (
-    <Carrito.Provider value={{ carrito, agregarAlCarrito, eliminarDelCarrito }}>
+    <Carrito.Provider
+      value={{ carrito, agregarAlCarrito, eliminarDelCarrito, vaciarCarrito }}
+    >
       {children}
     </Carrito.Provider>
   );
