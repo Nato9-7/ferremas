@@ -45,10 +45,21 @@ const CarritoPage = () => {
       document.body.appendChild(form);
       form.submit();
     } catch (error) {
-      console.error("Error al iniciar pago:", error);
-      alert("Ocurrió un error al procesar el pago.");
+      setErrorPago(
+        "❌ Ocurrió un error al procesar el pago. Intenta agregar algún producto."
+      );
     }
   };
+
+  function confirmarInicioSesion() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Debes iniciar sesión para continuar con la compra.");
+      window.location.href = "/login";
+      return false;
+    }
+    return true;
+  }
 
   return (
     <div className="container mx-auto px-4 mt-10   flex flex-col lg:flex-row gap-6 rounded ">
@@ -120,8 +131,12 @@ const CarritoPage = () => {
           <span>${total.toLocaleString()}</span>
         </div>
         <button
-          onClick={handleCheckout}
-          className="w-full mt-4 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition "
+          onClick={() => {
+            if (confirmarInicioSesion()) {
+              handleCheckout();
+            }
+          }}
+          className="w-full mt-4 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
         >
           Continuar compra
         </button>
