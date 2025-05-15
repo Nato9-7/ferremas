@@ -4,6 +4,14 @@ import "./cuentapage.css";
 const CuentaPage = () => {
   const [usuario, setUsuario] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [producto, setProducto] = useState({
+    nombre: "",
+    precio: "",
+    marca: "",
+  });
+  const [imagen, setImagen] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   useEffect(() => {
     const fetchUsuario = async () => {
@@ -30,7 +38,35 @@ const CuentaPage = () => {
   if (loading) return <div>Cargando...</div>;
   if (!usuario) return <div>No se pudo cargar la información de tu cuenta.</div>;
 
-  console.log("Usuario cargado:", usuario, "ID:", usuario && usuario.id, "Tipo:", typeof usuario && typeof usuario.id);
+  const handleInputChange = (e) => {
+    setProducto({ ...producto, [e.target.name]: e.target.value });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImagen(file);
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setPreview(null);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Aquí puedes hacer la petición para subir el producto y la imagen (ejemplo con FormData)
+    // const formData = new FormData();
+    // formData.append("nombre", producto.nombre);
+    // formData.append("precio", producto.precio);
+    // formData.append("marca", producto.marca);
+    // if (imagen) formData.append("imagen", imagen);
+
+    alert(`Producto subido: ${producto.nombre}, $${producto.precio}, Marca: ${producto.marca}${imagen ? ", Imagen seleccionada" : ""}`);
+    setShowForm(false);
+    setProducto({ nombre: "", precio: "", marca: "" });
+    setImagen(null);
+    setPreview(null);
+  };
 
   return (
     <div className="cuenta-container">
@@ -53,9 +89,68 @@ const CuentaPage = () => {
         </div>
         {/* Mostrar botón solo si el id es 7 */}
         {Number(usuario.id) === 7 && (
-          <button className="cuenta-boton-especial">
-            Subir producto
-          </button>
+          <>
+            <button className="cuenta-boton-especial" onClick={() => setShowForm(true)}>
+              Subir producto
+            </button>
+            {showForm && (
+              <div className="modal-form">
+                <form className="form-producto" onSubmit={handleSubmit}>
+                  <label>
+                    Nombre:
+                    <input
+                      type="text"
+                      name="nombre"
+                      value={producto.nombre}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </label>
+                  <label>
+                    Precio:
+                    <input
+                      type="number"
+                      name="precio"
+                      value={producto.precio}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </label>
+                  <label>
+                    Marca:
+                    <input
+                      type="text"
+                      name="marca"
+                      value={producto.marca}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </label>
+                  <label>
+                    Imagen:
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
+                  </label>
+                  {preview && (
+                    <div style={{ textAlign: "center", marginBottom: 12 }}>
+                      <img src={preview} alt="Preview" style={{ maxWidth: 120, maxHeight: 120, borderRadius: 8 }} />
+                    </div>
+                  )}
+                  <div className="form-buttons">
+                    <button type="button" onClick={() => { setShowForm(false); setPreview(null); setImagen(null); }}>
+                      Cerrar
+                    </button>
+                    <button type="submit">
+                      Subir
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
