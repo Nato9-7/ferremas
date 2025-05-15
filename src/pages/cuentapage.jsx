@@ -52,20 +52,39 @@ const CuentaPage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí puedes hacer la petición para subir el producto y la imagen (ejemplo con FormData)
-    // const formData = new FormData();
-    // formData.append("nombre", producto.nombre);
-    // formData.append("precio", producto.precio);
-    // formData.append("marca", producto.marca);
-    // if (imagen) formData.append("imagen", imagen);
 
-    alert(`Producto subido: ${producto.nombre}, $${producto.precio}, Marca: ${producto.marca}${imagen ? ", Imagen seleccionada" : ""}`);
-    setShowForm(false);
-    setProducto({ nombre: "", precio: "", marca: "" });
-    setImagen(null);
-    setPreview(null);
+    // Validación simple
+    if (!producto.nombre || !producto.precio || !producto.marca) {
+      alert("Completa todos los campos");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("nombre", producto.nombre);
+    formData.append("precio", parseFloat( producto.precio)); // O parseFloat si tu API lo requiere
+    formData.append("marca", producto.marca);
+    if (imagen) formData.append("imagen", imagen);
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:5000/producto", {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        body: formData,
+      });
+      if (!response.ok) throw new Error("Error al subir el producto");
+      const data = await response.json();
+      alert(`Producto subido correctamente: ${data.mensaje}`);
+      setShowForm(false);
+      setProducto({ nombre: "", precio: "", marca: "" });
+      setPreview(null);
+      setImagen(null);
+    } catch (error) {
+      alert("Error al subir el producto");
+      console.error(error);
+    }
   };
 
   return (
