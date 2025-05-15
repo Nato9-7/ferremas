@@ -1,0 +1,141 @@
+/* Animación de entrada */
+@keyframes fadeInCuenta {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Contenedor principal */
+
+.cuenta-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Subir la card */
+  min-height: 100vh;
+  background: #f3f4f6;
+  padding-top: 60px; /* Ajusta este valor según lo que necesites */
+}
+
+/* Tarjeta */
+.cuenta-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  animation: fadeInCuenta 0.6s ease;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Título */
+.cuenta-title {
+  text-align: center;
+  color: #1e3a8a;
+  font-size: 2rem;
+  margin-bottom: 24px;
+  font-weight: bold;
+}
+
+/* Texto de los datos */
+.cuenta-dato {
+  color: #22223b;
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+}
+
+.cuenta-dato strong {
+  color: #193CB8;
+}
+
+/* Avatar */
+.cuenta-avatar {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 24px; /* Opcional: espacio debajo de la imagen */
+}
+
+/* Botón especial */
+.cuenta-boton-especial {
+  display: block;
+  margin: 32px auto 0 auto;
+  background: #193CB8;
+  color: #fff;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cuenta-boton-especial:hover {
+  background: #1e3a8a;
+}
+
+/* Modal Formulario */
+.modal-form {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.form-producto {
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px #0002;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 300px;
+}
+
+.form-producto label {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+  color: #1e3a8a;
+}
+
+.form-producto input {
+  margin-top: 4px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.form-buttons button {
+  padding: 8px 18px;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.form-buttons button[type="submit"] {
+  background: #193CB8;
+  color: #fff;
+}
+
+.form-buttons button[type="button"] {
+  background: #eee;
+  color: #193CB8;
+}
