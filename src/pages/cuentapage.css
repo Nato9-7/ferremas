@@ -1,0 +1,61 @@
+/* Animación de entrada */
+@keyframes fadeInCuenta {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Contenedor principal */
+
+.cuenta-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Subir la card */
+  min-height: 100vh;
+  background: #f3f4f6;
+  padding-top: 60px; /* Ajusta este valor según lo que necesites */
+}
+
+/* Tarjeta */
+.cuenta-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  animation: fadeInCuenta 0.6s ease;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Título */
+.cuenta-title {
+  text-align: center;
+  color: #1e3a8a;
+  font-size: 2rem;
+  margin-bottom: 24px;
+  font-weight: bold;
+}
+
+/* Texto de los datos */
+.cuenta-dato {
+  color: #22223b;
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+}
+
+.cuenta-dato strong {
+  color: #193CB8;
+}
+
+/* Avatar */
+.cuenta-avatar {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 24px; /* Opcional: espacio debajo de la imagen */
+}

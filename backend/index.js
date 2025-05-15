@@ -100,6 +100,28 @@ app.post('/register', (req, res) => {
   );
 });
 
+// Endpoint para obtener datos del usuario autenticado
+app.get('/usuario', (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ error: "No autorizado" });
+
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    // Busca el usuario en la base de datos usando el ID del token
+    db.query(
+      "SELECT nombre, apellidos as apellido, correo, numerotelf as numero_telefono FROM usuario WHERE id = ?",
+      [decoded.id],
+      (err, results) => {
+        if (err || results.length === 0) return res.status(404).json({ error: "Usuario no encontrado" });
+        res.json(results[0]);
+      }
+    );
+  } catch {
+    res.status(401).json({ error: "Token inválido" });
+  }
+});
+
 //  Iniciar servidor
 app.listen(port, () => {
   console.log(`API corriendo en http://localhost:${port}`);

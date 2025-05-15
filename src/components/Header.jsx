@@ -11,7 +11,7 @@ import { Bars3Icon, ChevronDownIcon } from "@heroicons/react/24/outline";
 const links = [
   { label: "Iniciar sesión", to: "/login" },
   { label: "Crear cuenta", to: "/register" },
-  { label: "Mi cuenta", to: "/account" },
+  { label: "Mi cuenta", to: "/cuentapage" },
   { label: "Logout", isButton: true }, // Agregar Logout como un botón
 ];
 
@@ -126,30 +126,33 @@ const Header = () => {
                     <button
                       className="block w-full text-left rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
                       onClick={() => {
-                        // Eliminar el token y redirigir al login
                         localStorage.removeItem("token");
                         localStorage.removeItem("nombre");
-                        window.dispatchEvent(new Event("storage")); // Actualizar el estado del Header
-                        window.location.href = "/"; // Redirigir al inicio
+                        window.dispatchEvent(new Event("storage"));
+                        window.location.href = "/";
                       }}
                     >
                       Logout
                     </button>
                   )}
 
-                  {/* Otras opciones del menú */}
+                  {/* Mostrar "Crear cuenta" siempre */}
                   <Link
                     to="/register"
                     className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
                   >
                     Crear cuenta
                   </Link>
-                  <Link
-                    to="/account"
-                    className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
-                  >
-                    Mi cuenta
-                  </Link>
+
+                  {/* Mostrar "Mi cuenta" solo si el token está activo */}
+                  {localStorage.getItem("token") && (
+                    <Link
+                      to="/cuentapage"
+                      className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+                    >
+                      Mi cuenta
+                    </Link>
+                  )}
                 </div>
               </PopoverPanel>
             </Popover>

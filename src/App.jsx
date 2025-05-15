@@ -3,6 +3,7 @@ import Products from "./components/Products";
 import Login from "./pages/login";
 import Cart from "./pages/CartPage";
 import Register from "./pages/Register";
+import CuentaPage from "./pages/cuentapage";
 import WebpayReturn from "./pages/WebPayReturn";
 import { CarritoProvider } from "./components/Carrito";
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Products />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/cuentapage" element={<CuentaPage />} />
           <Route path="/CartPage" element={<Cart />} />
           <Route path="/webpay-return" element={<WebpayReturn />} />
         </Routes>
