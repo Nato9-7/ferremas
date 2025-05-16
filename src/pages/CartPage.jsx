@@ -157,7 +157,11 @@ const CarritoPage = () => {
         <button
           onClick={() => {
             if (confirmarInicioSesion()) {
+
               setMostrarEnvio(true); // Mostrar formulario de envío
+
+              handleCheckout();
+
             }
           }}
           className="w-full mt-4 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
