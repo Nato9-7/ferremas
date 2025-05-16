@@ -1,11 +1,24 @@
 import { useCarrito } from "../components/Carrito";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { useState } from "react"; // ✅ Necesario para manejar el mensaje
+import { useEffect, useState } from "react"; // ✅ Necesario para manejar el mensaje
 
 const CarritoPage = () => {
   const { carrito, eliminarDelCarrito, agregarAlCarrito } = useCarrito();
-  const [errorPago, setErrorPago] = useState(""); // ✅ Estado para el mensaje
+  const [errorPago, setErrorPago] = useState("");
+  const [mostrarEnvio, setMostrarEnvio] = useState(false);
+  const [datosEnvio, setDatosEnvio] = useState({
+    direccion: "",
+    ciudad: "",
+    telefono: "",
+  });
+
+  // Llama a esto cuando el usuario envía el formulario de envío
+  const handleEnvioSubmit = (e) => {
+    e.preventDefault();
+    setMostrarEnvio(false);
+    handleCheckout(); // Aquí puedes pasar datosEnvio si quieres guardarlos en backend
+  };
 
   const total = carrito.reduce(
     (sum, producto) => sum + producto.precio * producto.cantidad,
@@ -45,9 +58,21 @@ const CarritoPage = () => {
       document.body.appendChild(form);
       form.submit();
     } catch (error) {
-      setErrorPago("❌ Ocurrió un error al procesar el pago. Intenta agregar algún producto.");
+      setErrorPago(
+        "❌ Ocurrió un error al procesar el pago. Intenta agregar algún producto."
+      );
     }
   };
+
+  function confirmarInicioSesion() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Debes iniciar sesión para continuar con la compra.");
+      window.location.href = "/login";
+      return false;
+    }
+    return true;
+  }
 
   return (
     <div className="container mx-auto px-4 mt-10 flex flex-col lg:flex-row gap-6 rounded">
@@ -130,11 +155,83 @@ const CarritoPage = () => {
           <span>${total.toLocaleString()}</span>
         </div>
         <button
-          onClick={handleCheckout}
+          onClick={() => {
+            if (confirmarInicioSesion()) {
+
+              setMostrarEnvio(true); // Mostrar formulario de envío
+
+              handleCheckout();
+
+            }
+          }}
           className="w-full mt-4 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
         >
           Continuar compra
         </button>
+        {/* Sección de formulario de envío */}
+        {mostrarEnvio && (
+          <div className="fixed inset-0 bg-opacity-40 flex items-center justify-center z-50">
+            <div className="bg-white p-8 rounded shadow-lg w-full max-w-md ">
+              <h3 className="text-lg font-bold mb-4 text-black">
+                Datos de envío
+              </h3>
+              <form
+                onSubmit={handleEnvioSubmit}
+                className="ring-black-500 focus:ring-2  "
+              >
+                <label className="block mb-2 text-sm text-black">
+                  Dirección
+                </label>
+                <input
+                  type="text"
+                  className="w-full mb-4 p-2 border border-gray-300 rounded "
+                  value={datosEnvio.direccion}
+                  onChange={(e) =>
+                    setDatosEnvio({ ...datosEnvio, direccion: e.target.value })
+                  }
+                  required
+                />
+                <label className="block mb-2 text-sm text-black">Ciudad</label>
+                <input
+                  type="text"
+                  className="w-full mb-4 p-2 border border-gray-300 rounded"
+                  value={datosEnvio.ciudad}
+                  onChange={(e) =>
+                    setDatosEnvio({ ...datosEnvio, ciudad: e.target.value })
+                  }
+                  required
+                />
+                <label className="block mb-2 text-sm text-black">
+                  Teléfono
+                </label>
+                <input
+                  type="text"
+                  className="w-full mb-4 p-2 border border-gray-300 rounded"
+                  value={datosEnvio.telefono}
+                  onChange={(e) =>
+                    setDatosEnvio({ ...datosEnvio, telefono: e.target.value })
+                  }
+                  required
+                />
+                <div className="flex justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setMostrarEnvio(false)}
+                    className="px-4 py-2 bg-gray-300 rounded hover:bg-red-600"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-800"
+                  >
+                    Proceder al pago
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -7,7 +7,8 @@ import {
   PopoverPanel,
 } from "@headlessui/react";
 import { Bars3Icon, ChevronDownIcon } from "@heroicons/react/24/outline";
-import { useCarrito } from "../components/Carrito"; // ✅ Importar el contexto del carrito
+import { useCarrito } from "./Carrito"; // ✅ Importar el contexto del carrito
+import axios from "axios";
 
 const links = [
   { label: "Iniciar sesión", to: "/login" },
@@ -15,11 +16,14 @@ const links = [
 
   { label: "Mi cuenta", to: "/cuentapage" },
   { label: "Logout", isButton: true }, // Agregar Logout como un botón
-
 ];
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const [busqueda, setBusqueda] = useState("");
+  const [resultados, setResultados] = useState([]);
+  const [productos, setProductos] = useState([]);
 
   const [nombre, setNombre] = useState(
     localStorage.getItem("nombre") || ", inicia sesión"
@@ -35,6 +39,30 @@ const Header = () => {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
+
+  useEffect(() => {
+    const cargarProductos = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/producto");
+        setProductos(response.data);
+      } catch (error) {
+        console.error("Error al cargar productos:", error);
+      }
+    };
+
+    cargarProductos();
+  }, []);
+
+  useEffect(() => {
+    if (busqueda.trim() === "") {
+      setResultados([]);
+    } else {
+      const filtrados = productos.filter((producto) =>
+        producto.nombre.toLowerCase().includes(busqueda.toLowerCase())
+      );
+      setResultados(filtrados);
+    }
+  }, [busqueda, productos]);
 
   return (
     <header className="bg-blue-800 text-white shadow-lg">
@@ -83,7 +111,24 @@ const Header = () => {
                   type="text"
                   placeholder="Buscar en Ferremas"
                   className="w-128 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-white-500"
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
                 />
+                {resultados.length > 0 && (
+                  <div className="absolute bg-white border rounded mt-1 w-full z-50 max-h-60 overflow-auto">
+                    {resultados.map((producto) => (
+                      <Link
+                        key={producto.id}
+                        to={`/producto/${producto.id}`}
+                        className="block px-4 py-2 text-black hover:bg-gray-100"
+                        onClick={() => setBusqueda("")} // opcional: limpiar búsqueda
+                      >
+                        {producto.nombre}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+
                 <button className="absolute right-3 top-3 text-white-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -130,14 +175,14 @@ const Header = () => {
                       onClick={() => {
                         localStorage.removeItem("token");
                         localStorage.removeItem("nombre");
-                        window.dispatchEvent(new Event("storage"));
-                        window.location.href = "/";
+                        window.dispatchEvent(new Event("storage")); // Actualizar el estado del Header
+                        window.location.href = "/"; // Redirigir al inicio
+                        localStorage.removeItem("usuario_id");
                       }}
                     >
                       Cerrar sesión
                     </button>
                   )}
-
 
                   <Link
                     to="/register"
@@ -195,7 +240,7 @@ const Header = () => {
 
             {/* Mensaje debajo del botón "Mis compras" */}
             {mensaje && (
-              <div className="absolute top-full mt-2 left-0 w-max bg-green-600 text-white px-4 py-1 rounded shadow-md text-sm z-50">
+              <div className="absolute top-full mt-2 left-0 max-w-xs break-words overflow-x-auto bg-green-600 text-white py-1 px-3 rounded shadow-md text-sm z-50">
                 {mensaje}
               </div>
             )}

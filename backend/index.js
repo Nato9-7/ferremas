@@ -33,16 +33,14 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Pool de conexiones MySQL
-const db = mysql.createPool({
+// Conexión a MySQL
+const db = mysql.createConnection( {
   host: 'bodxhia1bgfd9lyers48-mysql.services.clever-cloud.com',
   user: 'u0rtqxk97gcsgtoq',
   password: '73h1ZTBHRb797nyjYZhu',
-  database: 'bodxhia1bgfd9lyers48',
-  waitForConnections: true,
-  connectionLimit: 5,
-  queueLimit: 0
-});
+  database: 'bodxhia1bgfd9lyers48',});
+
+
 
 // Endpoint para obtener productos
 app.get('/producto', (req, res) => {
