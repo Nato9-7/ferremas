@@ -12,17 +12,29 @@ const Catalogo = () => {
   const [categorias, setCategorias] = useState([]);
   const [marcas, setMarcas] = useState([]);
   const [cantidades, setCantidades] = useState({}); // ✅ Guardar cantidades individuales
+  const [tasaUSD, setTasaUSD] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:5000/producto")
       .then((res) => res.json())
       .then((data) => {
-        if (!Array.isArray(data)) throw new Error("La respuesta no es un array de productos");
+        if (!Array.isArray(data))
+          throw new Error("La respuesta no es un array de productos");
         setProductos(data);
         setCategorias([...new Set(data.map((p) => p.categoria))]);
         setMarcas([...new Set(data.map((p) => p.marca))]);
       })
       .catch((err) => console.error("Error al obtener productos:", err));
+
+    // Obtener la tasa CLP a USD
+    fetch(
+      "https://v6.exchangerate-api.com/v6/d824b5ddf66c507467eb3ded/latest/CLP"
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setTasaUSD(data.conversion_rates.USD);
+      })
+      .catch((err) => console.error("Error al obtener tasa USD:", err));
   }, []);
 
   const productosFiltrados = productos.filter(
@@ -49,12 +61,18 @@ const Catalogo = () => {
         {/* Encabezado y Filtros */}
         <div className="flex flex-col md:flex-row justify-between items-center bg-white p-6 rounded shadow mb-8 gap-4 border border-gray-300">
           <div className="text-center md:text-left">
-            <h1 className="text-3xl font-bold text-blue-800">Catálogo de productos</h1>
-            <p className="text-gray-700">Filtra por categoría o marca para encontrar lo que necesitas</p>
+            <h1 className="text-3xl font-bold text-blue-800">
+              Catálogo de productos
+            </h1>
+            <p className="text-gray-700">
+              Filtra por categoría o marca para encontrar lo que necesitas
+            </p>
           </div>
 
           <div className="flex flex-wrap gap-3 items-center">
-            <label className="text-sm text-gray-700 font-semibold">Categoría:</label>
+            <label className="text-sm text-gray-700 font-semibold">
+              Categoría:
+            </label>
             <select
               className="p-2 border border-gray-400 rounded bg-white text-gray-800"
               value={categoriaFiltro}
@@ -71,7 +89,9 @@ const Catalogo = () => {
               ))}
             </select>
 
-            <label className="text-sm text-gray-700 font-semibold">Marca:</label>
+            <label className="text-sm text-gray-700 font-semibold">
+              Marca:
+            </label>
             <select
               className="p-2 border border-gray-400 rounded bg-white text-gray-800"
               value={marcaFiltro}
@@ -125,17 +145,28 @@ const Catalogo = () => {
                 type="number"
                 min={1}
                 value={cantidades[producto.codigoProducto] || 1}
-                onChange={(e) => handleCantidadChange(producto.codigoProducto, e.target.value)}
+                onChange={(e) =>
+                  handleCantidadChange(producto.codigoProducto, e.target.value)
+                }
                 className="w-full mb-2 p-1 border rounded text-black text-sm"
               />
 
               <div className="mt-auto">
                 <p className="text-lg font-bold text-green-600 mb-3">
-                  ${producto.precio.toLocaleString()}
+                  ${producto.precio.toLocaleString()} CLP
                 </p>
+                {tasaUSD && (
+                  <p className="text-sm text-blue-600 mb-2">
+                    ${(producto.precio * tasaUSD).toFixed(2)} USD
+                  </p>
+                )}
+
                 <button
                   onClick={() =>
-                    agregarAlCarrito(producto, cantidades[producto.codigoProducto] || 1)
+                    agregarAlCarrito(
+                      producto,
+                      cantidades[producto.codigoProducto] || 1
+                    )
                   }
                   className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300"
                 >
@@ -149,7 +180,9 @@ const Catalogo = () => {
         {/* Paginación */}
         <div className="flex justify-center mt-8 gap-2">
           {Array.from(
-            { length: Math.ceil(productosFiltrados.length / productosPorPagina) },
+            {
+              length: Math.ceil(productosFiltrados.length / productosPorPagina),
+            },
             (_, i) => (
               <button
                 key={i}

@@ -16,7 +16,6 @@ const links = [
 
   { label: "Mi cuenta", to: "/cuentapage" },
   { label: "Logout", isButton: true }, // Agregar Logout como un botón
-
 ];
 
 const Header = () => {
@@ -185,7 +184,6 @@ const Header = () => {
                     </button>
                   )}
 
-
                   <Link
                     to="/register"
                     className="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
@@ -242,7 +240,7 @@ const Header = () => {
 
             {/* Mensaje debajo del botón "Mis compras" */}
             {mensaje && (
-              <div className="absolute top-full mt-2 left-0 w-max bg-green-600 text-white px-4 py-1 rounded shadow-md text-sm z-50">
+              <div className="absolute top-full mt-2 left-0 max-w-xs break-words overflow-x-auto bg-green-600 text-white py-1 px-3 rounded shadow-md text-sm z-50">
                 {mensaje}
               </div>
             )}
